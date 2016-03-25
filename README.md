@@ -1,5 +1,7 @@
 # Repositor
 
+[gem]: https://rubygems.org/gems/repositor
+
 ## Installation & Setup
 
 In gemfile:
