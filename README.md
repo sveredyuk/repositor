@@ -84,7 +84,12 @@ class ProductsController < ApplicationController
   def repo
     @products_repo ||= ProductsRepo.new
   end
+  # By default repositor will try to find `Product` model and communicate with it
+  # if you need specify other model, pass in params
+  # ProductsRepo.new(model: SaleProduct)
 end
+
+## How to use
 
 ```
 
