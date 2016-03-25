@@ -144,4 +144,6 @@ end
 If you need to add new method to repo, just define it in repo file.
 
 ## TODO
+* Specs on the way...
+* Add mongoid support
 * Some improvements ? =)
