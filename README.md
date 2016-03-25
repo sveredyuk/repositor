@@ -88,10 +88,10 @@ class ProductsController < ApplicationController
   # if you need specify other model, pass in params
   # ProductsRepo.new(model: SaleProduct)
 end
+```
 
 ## How to use
 
-```
 
 In `app` directory you need to create new `repos` directory . Recomended to create `application_repo.rb` and inherit from it all repos, so you could keep all your repos under single point of inheritance.
 
