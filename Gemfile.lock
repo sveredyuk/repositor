@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    Repositor (0.1.0)
+    repositor (0.3.0)
 
 GEM
   remote: https://rubygems.org/
@@ -25,7 +25,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  Repositor!
+  repositor!
   rspec (~> 3.4, >= 3.4.0)
 
 BUNDLED WITH
