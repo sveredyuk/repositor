@@ -97,7 +97,10 @@ In `app` directory you need to create new `repos` directory . Recomended to crea
 
 ```ruby
 class ApplicationRepo
-  include Repositor
+  # include ORM submodule
+  # now supported only ActiveRecord
+  # more will added soon
+  include Repositor::ActiveRecord
 end
 ```
 
