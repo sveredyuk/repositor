@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'repositor'
-  s.version     = '0.1.3'
+  s.version     = '0.2.0'
   s.date        = '2016-03-24'
   s.summary     = "Implementation of RepoPattern"
   s.description = "Create simple Repos for easy controllers"
