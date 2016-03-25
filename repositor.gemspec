@@ -1,9 +1,9 @@
 Gem::Specification.new do |s|
   s.name        = 'repositor'
-  s.version     = '0.2.0'
+  s.version     = '0.2.1'
   s.date        = '2016-03-24'
-  s.summary     = "Implementation of RepoPattern"
-  s.description = "Create simple Repos for easy controllers"
+  s.summary     = "Implementation of Repository Pattern for Rails"
+  s.description = "Create simple Repos for Rails Controllers"
   s.authors     = ["Volodya Sveredyuk"]
   s.email       = 'sveredyuk@gmail.com'
   s.files       = ["lib/repositor.rb"]
