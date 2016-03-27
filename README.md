@@ -108,7 +108,7 @@ end
 
 Than you need to create `products_repo.rb`:
 ```ruby
-class ProductsRepo < ApplicationRepo;
+class ProductsRepo < ApplicationRepo
   # here you will have default methods for repo actions
 end
 ```
