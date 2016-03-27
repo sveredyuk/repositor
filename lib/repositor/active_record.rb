@@ -1,10 +1,9 @@
 module Repositor
   module ActiveRecord
-    attr_reader :model, :options
+    attr_reader :model
 
-    def initialize(model: nil, options = {})
+    def initialize(model: nil)
       @model   = model || self.class.to_s.chomp("Repo").singularize.constantize
-      @options = options
     end
 
     def find(record_id)
