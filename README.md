@@ -124,7 +124,6 @@ If check what exactly was done, including `Repository` module in base `Applicati
 `Repositor` did for you a lot of dry work. In other case for each repo you must make identical methods, like this:
 ```ruby
 class ProductsRepo
-
   def all
     Product.all
   end
@@ -152,7 +151,8 @@ class ProductsRepo
   end
 end
 ```
-If you need to add new method to repo, just define it in repo file.
+If you need to add new method for model, just define it in repo file.
+Keep your model skinny.
 
 ## TODO
 * Specs on the way...
