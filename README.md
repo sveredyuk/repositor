@@ -110,6 +110,11 @@ Than you need to create `products_repo.rb`:
 ```ruby
 class ProductsRepo < ApplicationRepo
   # here you will have default methods for repo actions
+  # if you want communicate with model class,
+  # just can use model method to send it any method you need
+  def all_with_name_john
+    model.where(name: 'John')
+  end
 end
 ```
 and that's all... magic already happened (no)
