@@ -124,16 +124,21 @@ If check what exactly was done, including `Repository` module in base `Applicati
 `Repositor` did for you a lot of dry work. In other case for each repo you must make identical methods, like this:
 ```ruby
 class ProductsRepo
-  def find(product_id)
-    Product.find(product_id)
-  end
 
   def all
     Product.all
   end
 
-   def new
+  def new
     Product.new
+  end
+
+  def find(product_id)
+    Product.find(product_id)
+  end
+
+  def create(product_params)
+    Product.create(product_params)
   end
 
   def update(product_id, params)
@@ -144,10 +149,6 @@ class ProductsRepo
 
   def destroy(product_id)
     find(product_id).destroy
-  end
-
-  def create(product_params)
-    Product.create(product_params)
   end
 end
 ```
