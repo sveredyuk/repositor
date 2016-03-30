@@ -101,7 +101,7 @@ In `app` directory you need to create new `repos` directory . Recomended to crea
 class ApplicationRepo
   # include ORM submodule
   # now supported only ActiveRecord
-  # more will added soon
+  # more will be added soon
   include Repositor::ActiveRecord
 end
 ```
