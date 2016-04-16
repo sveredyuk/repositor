@@ -75,11 +75,11 @@ class ProductsController < ApplicationController
 
   # Declaration if repo object:
   def repo
-    @products_repo ||= ProductsRepo.new
+    @products_repo ||= ProductRepo.new
   end
   # By default repositor will try to find `Product` model and communicate with it
   # if you need specify other model, pass in params
-  # ProductsRepo.new(model: SaleProduct)
+  # ProductRepo.new(model: SaleProduct)
 end
 ```
 
@@ -97,9 +97,9 @@ class ApplicationRepo
 end
 ```
 
-Than you need to create `products_repo.rb`:
+Than you need to create `product_repo.rb`:
 ```ruby
-class ProductsRepo < ApplicationRepo
+class ProductRepo < ApplicationRepo
   # here you will have default methods for repo actions
   # if you want communicate with model class,
   # just can use model method to send it any method you need
