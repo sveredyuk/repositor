@@ -4,21 +4,28 @@
 
 ## Installation & Setup
 
-In gemfile:
+Manual:
+```
+gem install 'repositor'
+```
+
+For gemfile:
 ```ruby
 gem 'repositor'
 ```
 
-In console:
+And run in console:
 ```
-bundle
+bundle install
 ```
 
 ## Description
 
-This gem is an implementation of Repository Pattern described in book [Fearless Refactoring Rails Controllers](http://rails-refactoring.com/) by Andrzej Krzywda 2014 (c). Awesome book, recommend read for all who are scary open own controller files ;)
+This gem is an implementation of **Repository Pattern** described in book [Fearless Refactoring Rails Controllers](http://rails-refactoring.com/) by Andrzej Krzywda 2014 (c). Awesome book, recommend read for all who are scary open own controller files ;)
 
-The main reason to user RepoObject is that your controller don't communicate with ORM layer (ActiveRecord or Mongoid). It must communicate with Repo layer so you are not stricted about your database adapter. If in future you will want to change it, you will need just to reconfigure your Repository layer. Sounds nice. Let's try it..
+The main reason to user **RepoObject** is that your controller don't communicate with ORM layer (ActiveRecord or Mongoid). It must communicate with Repo layer so you are not stricted about your database adapter. If in future you will want to change it, you will need just to reconfigure your Repository layer. Sounds nice. Let's try it..
+
+With some helps of helper method your controller can be only 30-40 lines of code. Nothing more.
 
 With RepoObject you controller could look something like this:
 ```ruby
@@ -30,7 +37,7 @@ class ProductsController < ApplicationController
 
   def create
     @product = repo.create(product_params)
-    @product .valid? ? redirect_to(default_redirect) : render(:new)
+    @product.valid? ? redirect_to(default_redirect) : render(:new)
   end
 
   def update
@@ -53,11 +60,15 @@ class ProductsController < ApplicationController
   end
 
   # Helper method that find or init new instance for you and cache it in ivar
+  # You can use it for at view show action just `product` method
+  # or for _form partial also `product`
   def product
     @product ||= repo.find(params[:id])
   end
 
   # Second helper that allow to cache all collection
+  # At view method `products` allows you access to colelction
+  # No any `@`'s anymore!
   def products
     @products ||= repo.all
   end
