@@ -1,8 +1,8 @@
 PATH
   remote: .
   specs:
-    repositor (0.3.4)
-      activesupport (~> 4.2.6)
+    repositor (0.4.0)
+      activesupport (~> 4.2, >= 4.2.6)
 
 GEM
   remote: https://rubygems.org/

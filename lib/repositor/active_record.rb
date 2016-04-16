@@ -24,6 +24,7 @@ module Repositor
 
     def update(record, record_params)
       record.update(record_params)
+      record
     end
 
     def destroy(record)
