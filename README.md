@@ -67,8 +67,8 @@ class ProductsController < ApplicationController
   end
 
   # Second helper that allow to cache all collection
-  # At view method `products` allows you access to colelction
-  # No any `@`'s anymore!
+  # At view method `products` allows you access to the colelction
+  # No any @'s anymore!
   def products
     @products ||= repo.all
   end
