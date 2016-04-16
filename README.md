@@ -114,7 +114,7 @@ If check what exactly was done, including `Repository` module in base `Applicati
 
 `Repositor` did for you a lot of dry work. In other case for each repo you must make identical methods, like this:
 ```ruby
-class ProductsRepo
+class ProductRepo
   def all
     Product.all
   end
