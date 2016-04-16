@@ -20,66 +20,46 @@ This gem is an implementation of Repository Pattern described in book [Fearless 
 
 The main reason to user RepoObject is that your controller don't communicate with ORM layer (ActiveRecord or Mongoid). It must communicate with Repo layer so you are not stricted about your database adapter. If in future you will want to change it, you will need just to reconfigure your Repository layer. Sounds nice. Let's try it..
 
-With RepoObject you controller must look something like this:
+With RepoObject you controller could look something like this:
 ```ruby
 class ProductsController < ApplicationController
 
-  # you are free from action callbacks...
-
-  def index
-    @products = repo.all # you communicate with repo object, not with model!
-  end
-
-  def show
-    @product = repo.find(params[:id]) # with repo... only...
-  end
-
-  def new
-    @product = repo.new # it's awesome! no?
-  end
-
-  def edit
-    @product = repo.find(params[:id]) # some dry?
-  end
+  # you are free from any action callbacks...
+  # but define this 2 helper methods:
+  helper_method :product, :products
 
   def create
-    respond_to do |format|
-      @product = repo.create(product_params) # send params to repo
-      if @product.valid? # just check for valid, not for create action
-        format.html { redirect_to @product, notice: 'Product was successfully created.' }
-        format.json { render :show, status: :created, location: @product }
-      else
-        format.html { render :new }
-        format.json { render json: @product.errors, status: :unprocessable_entity }
-      end
-    end
+    @product = repo.create(product_params)
+    @product .valid? ? redirect_to(default_redirect) : render(:new)
   end
 
   def update
-    respond_to do |format|
-      @product = repo.update(params[:id], product_params) # give repo id of record and params for update
-      if @product.valid? # only validations
-        format.html { redirect_to @product, notice: 'Product was successfully updated.' }
-        format.json { render :show, status: :ok, location: @product }
-      else
-        format.html { render :edit }
-        format.json { render json: @product.errors, status: :unprocessable_entity }
-      end
-    end
+    @product = repo.update(product, product_params)
+    @product.valid? ? redirect_to(default_redirect) : render(:edit)
   end
 
   def destroy
-    repo.destroy(params[:id]) # destroy also throw repo object
-    respond_to do |format|
-      format.html { redirect_to products_url, notice: 'Product was successfully destroyed.' }
-      format.json { head :no_content }
-    end
+    repo.destroy(product) and redirect_to default_redirect
   end
 
   private
 
   def product_params
     params.require(:product).permit(:name, :price, :dscription)
+  end
+
+  def default_redirect
+    products_path
+  end
+
+  # Helper method that find or init new instance for you and cache it in ivar
+  def product
+    @product ||= repo.find(params[:id])
+  end
+
+  # Second helper that allow to cache all collection
+  def products
+    @products ||= repo.all
   end
 
   # Declaration if repo object:
@@ -140,14 +120,12 @@ class ProductsRepo
     Product.create(product_params)
   end
 
-  def update(product_id, params)
-    find(product_id).tap do |product|
+  def update(params)
     product.update(params)
-    end
   end
 
-  def destroy(product_id)
-    find(product_id).destroy
+  def destroy(product)
+    product.destroy
   end
 end
 ```
@@ -155,6 +133,6 @@ If you need to add new method for model, just define it in repo file.
 Keep your model skinny.
 
 ## TODO
-* Specs on the way...
 * Add mongoid support
+* Add generators that generate repo folder and some `application_repo.rb`
 * Some improvements ? =)
