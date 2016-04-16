@@ -22,14 +22,12 @@ module Repositor
       model.send :create, record_params
     end
 
-    def update(record_id, record_params)
-      find(record_id).tap do |record|
-        record.update(record_params)
-      end
+    def update(record, record_params)
+      record.update(record_params)
     end
 
-    def destroy(record_id)
-      find(record_id).destroy
+    def destroy(record)
+      record.destroy
     end
   end
 end
