@@ -86,6 +86,12 @@ end
 ## How to use
 
 
+**By generator:**
+
+`rails generate repos`
+
+**Or manually:**
+
 In `app` directory you need to create new `repos` directory . Recomended to create `application_repo.rb` and inherit from it all repos, so you could keep all your repos under single point of inheritance.
 
 ```ruby
@@ -100,11 +106,15 @@ end
 Than you need to create `product_repo.rb`:
 ```ruby
 class ProductRepo < ApplicationRepo
-  # here you will have default methods for repo actions
+  # here you have default methods for repository actions
   # if you want communicate with model class,
   # just can use model method to send it any method you need
   def all_with_name_john
     model.where(name: 'John')
+  end
+
+  def create_if(params, condition)
+    create(params) if condition
   end
 end
 ```
