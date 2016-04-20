@@ -1,4 +1,7 @@
 class Thing # fake model
+  def hello
+    "hello"
+  end
 end
 
 class AnotherThing # another fake model =)
@@ -65,6 +68,17 @@ describe 'Repositor included' do
     it 'resend destroy method to model' do
       expect(repo_instance).to receive(:destroy)
       repo_instance.destroy
+    end
+  end
+
+  describe '#method_missing' do
+    it 'redirect record method to record instance' do
+      thing = Thing.new
+      expect(repo_instance.hello(thing)).to eq "hello"
+    end
+
+    it 'return nil if record not instance of model' do
+      expect(repo_instance.hello(Object.new)).to be_nil
     end
   end
 end

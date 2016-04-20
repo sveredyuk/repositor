@@ -118,9 +118,20 @@ class ProductRepo < ApplicationRepo
   end
 end
 ```
-and that's all... magic already happened (no)
 
-If check what exactly was done, including `Repository` module in base `ApplicationRepo` will add default CRUD methods to all repos that will be inherited from it. That's all. No magic.
+Also `Repositor` will redirect all missing methods to instance if it was passed as first argument:
+```ruby
+product_repo.new_record?(product)
+```
+same as:
+```ruby
+product.new_record?
+```
+Only with the reason that you are not linked with data, only with it repo.
+
+and that's all...
+
+If check what exactly was done, including `Repository` module in base `ApplicationRepo` will add default CRUD methods to all repos that will be inherited from it.
 
 `Repositor` did for you a lot of dry work. In other case for each repo you must make identical methods, like this:
 ```ruby

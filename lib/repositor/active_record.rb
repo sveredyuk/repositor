@@ -30,5 +30,15 @@ module Repositor
     def destroy(record)
       record.destroy
     end
+
+    def method_missing(method, *args)
+      return unless args[0].instance_of? model
+
+      unless args.drop(1).empty?
+        args[0].send(method, args.drop(1))
+      else
+        args[0].send(method)
+      end
+    end
   end
 end
