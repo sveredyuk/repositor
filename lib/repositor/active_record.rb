@@ -18,7 +18,7 @@ module Repositor
       model.new
     end
 
-    # Support for `friendly_id` gemf out of box
+    # Support for `friendly_id` gem out of box
     def friendly_find(slugged_id)
       model.friendly.find(slugged_id)
     end
