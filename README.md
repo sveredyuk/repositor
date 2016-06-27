@@ -21,6 +21,11 @@ bundle install
 
 This gem is an implementation of **Repository Pattern** described in book [Fearless Refactoring Rails Controllers](http://rails-refactoring.com/) by Andrzej Krzywda 2014 (c). Awesome book, recommend read for all who are scary open own controller files ;)
 
+I solit record instance manage and collection manage into two almost same (but not) layers - Repos & Queries
+
+Repo - work with single record (:find, :new, :create, :update, :destroy)
+Query - work with coolections of records (:where and others)
+
 The main reason to user **RepoObject** is that your controller don't communicate with ORM layer (ActiveRecord or Mongoid). It must communicate with Repo layer so you are not stricted about your database adapter. If in future you will want to change it, you will need just to reconfigure your Repository layer. Sounds nice. Let's try it..
 
 With some helps of helper method your controller can be only 30-40 lines of code. Nothing more.

@@ -1,21 +1,4 @@
-class Thing # fake model
-  def hello
-    "hello"
-  end
-
-  def yeah
-    "yeahhhh!"
-  end
-end
-
-class AnotherThing # another fake model =)
-end
-
-class ThingRepo < Repositor::ActiveRecordAdapter
-  #allow_instance_methods :hello
-end
-
-describe 'Repositor included' do
+RSpec.describe 'Repo' do
   let(:repo)          { ThingRepo }
   let(:repo_instance) { ThingRepo.new }
   let(:thing)         { Thing.new }
@@ -38,13 +21,6 @@ describe 'Repositor included' do
     it 'resend find method to model' do
       expect(Thing).to receive(:find).with(1)
       repo_instance.find(1)
-    end
-  end
-
-  describe '#all' do
-    it 'resend all method to model' do
-      expect(Thing).to receive(:all)
-      repo_instance.all
     end
   end
 

@@ -1,18 +1,13 @@
 require 'active_support/core_ext/module/delegation'
-require 'active_support/inflector'
-require 'repositor/instance_allow'
+require 'repositor/repo/instance_allow'
 
-module Repositor
-  class ActiveRecordAdapter
+module Repositor::Repo
+  class ActiveRecordAdapter < Repositor::Base
     extend InstanceMethodsFilter
 
-    attr_reader :model
+    TYPE = 'Repo'.freeze
 
-    delegate :find, :all, :new, :create, :update, :destroy, to: :model
-
-    def initialize(model: nil)
-      @model = model || self.class.to_s.chomp("Repo").singularize.constantize
-    end
+    delegate :find, :new, :create, :update, :destroy, to: :model
 
     # Common find process with supporting of friendly_id params
     def find_or_initialize(id, friendly: false)

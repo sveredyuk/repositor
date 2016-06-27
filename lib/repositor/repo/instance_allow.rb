@@ -1,4 +1,4 @@
-module Repositor
+module Repositor::Repo
   module InstanceMethodsFilter
     attr_reader :allowed_methods
 
