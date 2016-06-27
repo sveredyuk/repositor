@@ -1,7 +1,5 @@
 # Repositor
 
-[gem]: https://rubygems.org/gems/repositor
-
 ## Installation & Setup
 
 Manual:
@@ -63,7 +61,7 @@ class ProductsController < ApplicationController
   # You can use it for at view show action just `product` method
   # or for _form partial also `product`
   def product
-    @product ||= repo.find(params[:id])
+    @product ||= repo.find_or_initialize(params[:id])
   end
 
   # Second helper that allow to cache all collection
@@ -85,7 +83,6 @@ end
 
 ## How to use
 
-
 **By generator:**
 
 `rails generate repos`
@@ -95,11 +92,19 @@ end
 In `app` directory you need to create new `repos` directory . Recomended to create `application_repo.rb` and inherit from it all repos, so you could keep all your repos under single point of inheritance.
 
 ```ruby
-class ApplicationRepo
-  # include ORM submodule
-  # now supported only ActiveRecord
-  # more will be added soon
-  include Repositor::ActiveRecord
+class ApplicationRepo <  Repositor::ActiveRecordAdapter
+  # now supported only ActiveRecord but will be added more soon
+  # 
+  # Adapter allow you to use 4 default methods for CRUD:
+  # :new, :create, :update, :destroy
+  # 
+  # Only 2 for finding/quering records
+  # :find, :all
+  # 
+  # And additional helpers
+  # find_or_initialize(id, friendly: false) => support for friendly_id gem
+  # or
+  # friendly_find(slugged_id)
 end
 ```
 
@@ -109,62 +114,46 @@ class ProductRepo < ApplicationRepo
   # here you have default methods for repository actions
   # if you want communicate with model class,
   # just can use model method to send it any method you need
-  def all_with_name_john
-    model.where(name: 'John')
-  end
-
   def create_if(params, condition)
     create(params) if condition
   end
+
+  # Very good approach is that you got a place where you can
+  # control persistence process, define some logic and reuse it everywhere.
+  def update(record, params)
+    result = record.update(params) if params[:ok] == 'ok'
+
+    if result
+      # trigger some event
+    end
+  end
+
+  # You also can compose queries
+  # But recommended to extract such methods to QueryObject (aka finder)
+  def all_with_name_john
+    model.where(name: 'John')
+  end
 end
 ```
 
-Also `Repositor` will redirect all missing methods to instance if it was passed as first argument:
+Also `Repositor` allow redirect defined record methods to instance if it was passed as first argument:
 ```ruby
+class ProductRepo < ApplicationRepo
+  allow_instance_methods :new_record?
+end
+
 product_repo.new_record?(product)
-```
-same as:
-```ruby
+# same as:
 product.new_record?
+
+# And not allowed will raise exception
+product_repo.persited?(product) # => NoMethodError
 ```
 Only with the reason that you are not linked with data, only with it repo.
 
-and that's all...
-
-If check what exactly was done, including `Repository` module in base `ApplicationRepo` will add default CRUD methods to all repos that will be inherited from it.
-
-`Repositor` did for you a lot of dry work. In other case for each repo you must make identical methods, like this:
-```ruby
-class ProductRepo
-  def all
-    Product.all
-  end
-
-  def new
-    Product.new
-  end
-
-  def find(product_id)
-    Product.find(product_id)
-  end
-
-  def create(product_params)
-    Product.create(product_params)
-  end
-
-  def update(params)
-    product.update(params)
-  end
-
-  def destroy(product)
-    product.destroy
-  end
-end
-```
-If you need to add new method for model, just define it in repo file.
-Keep your model skinny.
+**Keep your model skinny and without business logic.**
 
 ## TODO
 * Add mongoid support
-* Add generators that generate repo folder and some `application_repo.rb`
+* Add sequel support
 * Some improvements ? =)

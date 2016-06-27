@@ -1,8 +1,11 @@
 require 'active_support/core_ext/module/delegation'
 require 'active_support/inflector'
+require 'repositor/instance_allow'
 
 module Repositor
-  module ActiveRecord
+  class ActiveRecordAdapter
+    extend InstanceMethodsFilter
+
     attr_reader :model
 
     delegate :find, :all, :new, :create, :update, :destroy, to: :model
@@ -30,12 +33,24 @@ module Repositor
     # `record.new_record?`
     # But gives you more control under persistence process
     def method_missing(method, *args)
+      # Break if first argument was not a model record
       return unless args[0].instance_of? model
 
-      unless args.drop(1).empty?
-        args[0].send(method, args.drop(1))
+      # Super if allowed_methods not defined or in not included in array
+      am = self.class.allowed_methods
+      super if am.nil? || !am.include?(method)
+
+      resend_method(method, args)
+    end
+
+    def resend_method(method, args)
+      # All except first argumet is a record params
+      params = args.drop(1)
+
+      if params.any?
+        args[0].public_send(method, params)
       else
-        args[0].send(method)
+        args[0].public_send(method)
       end
     end
   end

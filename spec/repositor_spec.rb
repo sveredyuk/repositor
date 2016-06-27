@@ -2,18 +2,23 @@ class Thing # fake model
   def hello
     "hello"
   end
+
+  def yeah
+    "yeahhhh!"
+  end
 end
 
 class AnotherThing # another fake model =)
 end
 
-class ThingRepo
-  include Repositor::ActiveRecord
+class ThingRepo < Repositor::ActiveRecordAdapter
+  #allow_instance_methods :hello
 end
 
 describe 'Repositor included' do
   let(:repo)          { ThingRepo }
   let(:repo_instance) { ThingRepo.new }
+  let(:thing)         { Thing.new }
 
   describe '#initialize' do
     context 'without any attributes' do
@@ -72,9 +77,22 @@ describe 'Repositor included' do
   end
 
   describe '#method_missing' do
-    it 'redirect record method to record instance' do
-      thing = Thing.new
-      expect(repo_instance.hello(thing)).to eq "hello"
+    context 'when allowed' do
+      before do
+        ThingRepo.class_eval do
+          allow_instance_methods :hello
+        end
+      end
+
+      it 'redirect record method to record instance' do
+        expect(repo_instance.hello(thing)).to eq "hello"
+      end
+    end
+
+    context 'when not allowed (not defined)' do
+      it 'raise NoMethodError error' do
+        expect{repo_instance.yeah(thing)}.to raise_error(NoMethodError)
+      end
     end
 
     it 'return nil if record not instance of model' do

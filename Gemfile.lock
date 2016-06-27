@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    repositor (0.7.5)
+    repositor (1.0.0)
       activesupport (~> 4.0, >= 4.0.0)
 
 GEM
