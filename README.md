@@ -21,10 +21,10 @@ bundle install
 
 This gem is an implementation of **Repository Pattern** described in book [Fearless Refactoring Rails Controllers](http://rails-refactoring.com/) by Andrzej Krzywda 2014 (c). Awesome book, recommend read for all who are scary open own controller files ;)
 
-I solit record instance manage and collection manage into two almost same (but not) layers - Repos & Queries
+I split record instance manage and collection manage into two almost same (but not) layers - Repos & Queries
 
-Repo - work with single record (:find, :new, :create, :update, :destroy)
-Query - work with coolections of records (:where and others)
+**Repo** - work with single record (:find, :new, :create, :update, :destroy)
+**Query** - work with coolections of records (:all, :where and others)
 
 The main reason to user **RepoObject** is that your controller don't communicate with ORM layer (ActiveRecord or Mongoid). It must communicate with Repo layer so you are not stricted about your database adapter. If in future you will want to change it, you will need just to reconfigure your Repository layer. Sounds nice. Let's try it..
 
@@ -73,16 +73,23 @@ class ProductsController < ApplicationController
   # At view method `products` allows you access to the colelction
   # No any @'s anymore!
   def products
-    @products ||= repo.all
+    @products ||= query.all
   end
 
-  # Declaration if repo object:
+  # Declaration of repo object:
   def repo
     @products_repo ||= ProductRepo.new
   end
+
+  # Declaration of query object:
+  def query
+    @product_query ||= ProductQuery.new
+  end
   # By default repositor will try to find `Product` model and communicate with it
   # if you need specify other model, pass in params
-  # ProductRepo.new(model: SaleProduct)
+  # ProductRepo.new(model: TopProduct)
+  # or
+  # ProductQuery.new(model: SaleProduct)
 end
 ```
 
@@ -94,17 +101,18 @@ end
 
 **Or manually:**
 
-In `app` directory you need to create new `repos` directory . Recomended to create `application_repo.rb` and inherit from it all repos, so you could keep all your repos under single point of inheritance.
+In `app` directory you need to create new `repos` and `queries` directory . Recomended to create `application_repo.rb` and inherit from it all repos, so you could keep all your repos under single point of inheritance. (Same for queries)
 
+`app/repos/application_repo.rb`
 ```ruby
-class ApplicationRepo <  Repositor::ActiveRecordAdapter
+class ApplicationRepo <  Repositor::Repo::ActiveRecordAdapter
   # now supported only ActiveRecord but will be added more soon
   # 
   # Adapter allow you to use 4 default methods for CRUD:
   # :new, :create, :update, :destroy
   # 
-  # Only 2 for finding/quering records
-  # :find, :all
+  # Only 1 for find record
+  # :find
   # 
   # And additional helpers
   # find_or_initialize(id, friendly: false) => support for friendly_id gem
@@ -113,7 +121,17 @@ class ApplicationRepo <  Repositor::ActiveRecordAdapter
 end
 ```
 
-Than you need to create `product_repo.rb`:
+`app/queries/application_query.rb`
+```ruby
+class ApplicationQuery <  Repositor::Query::ActiveRecordAdapter
+  # now supported only ActiveRecord but will be added more soon
+  # 
+  # Adapter allow you to use 3 methods for CRUD:
+  # :all, :first, :last
+end
+```
+
+Than you need to create `app/repos/product_repo.rb`:
 ```ruby
 class ProductRepo < ApplicationRepo
   # here you have default methods for repository actions
@@ -132,11 +150,25 @@ class ProductRepo < ApplicationRepo
       # trigger some event
     end
   end
+end
+```
 
-  # You also can compose queries
-  # But recommended to extract such methods to QueryObject (aka finder)
-  def all_with_name_john
-    model.where(name: 'John')
+and `app/queries/product_query.rb`
+```ruby
+class ProductQuery < ApplicationQuery
+  # here you can define all scopes
+  # ATTENTION! Your queries always must reutrn Relation (!!!)
+  
+  def active
+    where(status: 'active')
+  end
+
+  def disabled(status: 'disabled')
+    where(status: 'active')
+  end
+  
+  def active_and_disabled
+    active | disabled
   end
 end
 ```
