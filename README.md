@@ -29,9 +29,9 @@ I split record instance manage and collection manage into two almost same (but n
 
 The main reason to user **RepoObject** is that your controller don't communicate with ORM layer (ActiveRecord or Mongoid). It will communicate with Repo/Query so you are not stricted about your database adapter or data API. It's some sort of anti-corruption layer also. If in future you will want to change it, you will need just to reconfigure your Repository layer. Sounds nice. Let's try it..
 
-With some helps of helper method your controller can be only 30-40 lines of code. Nothing more.
+With some support of `helper_method` your controller can be only 50-60 lines of code. Nothing more.
 
-With RepoObject you controller could look something like this:
+With **Repo** and **Query** you controller could look something like this:
 ```ruby
 class ProductsController < ApplicationController
 
@@ -138,9 +138,6 @@ class ProductRepo < ApplicationRepo
   # here you have default methods for repository actions
   # if you want communicate with model class,
   # just can use model method to send it any method you need
-  def create_if(params, condition)
-    create(params) if condition
-  end
 
   # Very good approach is that you got a place where you can
   # control persistence process, define some logic and reuse it everywhere.
@@ -150,6 +147,8 @@ class ProductRepo < ApplicationRepo
     if result
       # trigger some event
     end
+
+    result # don't forgot return object
   end
 end
 ```
@@ -160,6 +159,7 @@ class ProductQuery < ApplicationQuery
   # here you can define all scopes
   # ATTENTION! Your queries always must reutrn Relation (!!!)
   
+  # Simple scopes extraction from model
   def active
     where(status: 'active')
   end
@@ -168,6 +168,7 @@ class ProductQuery < ApplicationQuery
     where(status: 'active')
   end
   
+  # You can combine queries
   def active_and_disabled
     active | disabled
   end
